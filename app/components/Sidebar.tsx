@@ -1,8 +1,14 @@
+"use client";
+
+import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { FaXTwitter } from "react-icons/fa6";
 import { HiHome } from "react-icons/hi";
+import { useSession } from "next-auth/react";
 
 export default function Sidebar({ params }: any) {
+  const { data: session, status } = useSession();
+
   return (
     <div className="flex flex-col gap-4 p-3">
       <Link href="/">
@@ -15,9 +21,21 @@ export default function Sidebar({ params }: any) {
         <HiHome className="w-7 h-7"></HiHome>
         <span className="font-bold hidden xl:inline">Home</span>
       </Link>
-      <button className="bg-blue-400 rounded-full text-white hover:brightness-95 w-48 transition-all h-9 duration-200 shadow-lg hidden xl:inline font-bold">
-        Sign In
-      </button>
+      {session ? (
+        <button
+          className="bg-blue-400 rounded-full text-white hover:brightness-95 w-48 transition-all h-9 duration-200 shadow-lg hidden xl:inline font-bold"
+          onClick={() => signOut()}
+        >
+          {status ? "Loading" : "Sign Out"}
+        </button>
+      ) : (
+        <button
+          className="bg-blue-400 rounded-full text-white hover:brightness-95 w-48 transition-all h-9 duration-200 shadow-lg hidden xl:inline font-bold"
+          onClick={() => signIn()}
+        >
+          {status ? "Loading" : "Sign In"}
+        </button>
+      )}
     </div>
   );
 }
