@@ -28,7 +28,7 @@ export default function News({ params }: any) {
       .then((data) => setNews(data.articles))
       .catch((err) => console.error("Failed to fetch news:", err));
   }, []);
-  console.log(news);
+  // console.log(news);
   return (
     <div className="text-gray-700 space-y-3 bg-gray-100 rounded-xl pt-2 flex flex-col">
       <h4 className="font-bold text-xl px-4">Whats happening</h4>
