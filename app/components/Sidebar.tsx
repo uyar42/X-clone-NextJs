@@ -7,8 +7,21 @@ import { HiHome, HiDotsHorizontal } from "react-icons/hi";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 
+type Session = {
+  data: {
+    expiress: string;
+    user: {
+      name: string;
+      image: string;
+      username: string;
+      uid: string;
+      email: string;
+    };
+  };
+};
+
 export default function Sidebar({ params }: any) {
-  const { data: session, status } = useSession();
+  const { data: session }: { data: Session; status: Boolean } = useSession();
 
   console.log(session);
 
@@ -51,8 +64,8 @@ export default function Sidebar({ params }: any) {
             alt="my img"
           ></Image>
           <div className="hidden xl:inline">
-            <h4 className="font-bold">{session.user?.name}</h4>
-            <p className="text-gray-500">{session.user?.username}</p>
+            <h4 className="font-bold">{session?.user.name}</h4>
+            <p className="text-gray-500">{session?.user.username}</p>
           </div>
           <HiDotsHorizontal className="h-5 xl:ml-8  hidden xl:inline"></HiDotsHorizontal>
         </div>
