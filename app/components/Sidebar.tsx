@@ -23,8 +23,6 @@ type Session = {
 export default function Sidebar({ params }: any) {
   const { data: session }: { data: Session; status: Boolean } = useSession();
 
-  console.log(session);
-
   return (
     <div className=" h-screen flex flex-col justify-between p-3">
       <div className="flex flex-col gap-4">
