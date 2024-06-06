@@ -11,7 +11,12 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { async } from "@firebase/util";
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  serverTimestamp,
+} from "firebase/firestore";
 
 export default function Input() {
   const { data: session } = useSession();
@@ -19,6 +24,9 @@ export default function Input() {
   const [imageFileUrl, setImageFileUrl] = useState<string | null>();
   const [selectedFile, setSelectedFile] = useState<Blob | null>();
   const [imageFileUploading, setImageFileUploading] = useState<Boolean>();
+  const [text, setText] = useState<null | string>("");
+  const [postLoading, setPostLoading] = useState<Boolean>(false);
+  const db = getFirestore(app);
 
   const addImageToPost = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -33,8 +41,6 @@ export default function Input() {
       uploadImageToStorage();
     }
   }, [selectedFile]);
-
-  if (!session) return null;
 
   const uploadImageToStorage = async () => {
     setImageFileUploading(true);
@@ -64,6 +70,38 @@ export default function Input() {
     );
   };
 
+  const handleSubmit = async () => {
+    if (!session?.user) {
+      console.error("User is not logged in.");
+      return;
+    }
+
+    setPostLoading(true);
+
+    try {
+      const docRef = await addDoc(collection(db, "posts"), {
+        uid: session.user.uid,
+        name: session.user.name,
+        username: session?.user?.username,
+        text,
+        profileImg: session.user.image,
+        timestamp: serverTimestamp(),
+        image: imageFileUrl,
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+
+      setText("");
+      setImageFileUrl(null);
+      setSelectedFile(null);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    } finally {
+      setPostLoading(false);
+    }
+  };
+
+  if (!session) return null;
   return (
     <div className="flex border-b border-gray-200 p-3 space-x-3 w-full">
       <div className="flex-shrink-0">
@@ -71,7 +109,7 @@ export default function Input() {
           alt="user-img"
           width={30}
           height={50}
-          src={session?.user.image}
+          src={session?.user?.image!}
           className="rounded-full cursor-pointer hover:brightness-95"
         />
       </div>
@@ -79,6 +117,9 @@ export default function Input() {
         <textarea
           className="w-full border-none outline-none tracking-wide min-h-[50px] text-gray-700"
           placeholder="Whats happening"
+          onChange={(e) => {
+            setText(e.target.value);
+          }}
         ></textarea>
         {imageFileUrl && (
           <Image
@@ -86,7 +127,9 @@ export default function Input() {
             height={50}
             alt="img"
             src={imageFileUrl}
-            className="w-full max-h-[250px] pr-4 object-cover cursor-pointer"
+            className={`w-full max-h-[250px] pr-4 object-cover cursor-pointer
+              ${imageFileUploading ? "animate-pulse" : ""}
+              `}
           />
         )}
         <div className="flex justify-between pt-2.5">
@@ -102,8 +145,9 @@ export default function Input() {
             hidden
           />
           <button
-            disabled
+            // disabled={text?.trim() === "" || postLoading || imageFileUploading}
             className="bg-blue-500 rounded-full px-4 py-1.5 font-bold shadow-md disabled:opacity-50 text-white hover:brightness-95"
+            onClick={handleSubmit}
           >
             Post
           </button>
