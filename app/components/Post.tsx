@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { Icons } from "./Icons";
 
 interface Posts {
   id: string;
@@ -14,8 +15,9 @@ interface Posts {
 }
 
 export const Post = ({ post, id }: { post: Posts[] }) => {
+  console.log("deneme");
   return (
-    <div className="flex border-b  border-gray-200 p-4">
+    <div className="flex border-b  border-gray-200 p-4 hover:bg-gray-50">
       <div className="flex-shrink-0 mr-4">
         <Image
           className="rounded-full"
@@ -45,6 +47,7 @@ export const Post = ({ post, id }: { post: Posts[] }) => {
             className="rounded-2xl "
           ></Image>
         </Link>
+        <Icons />
       </div>
     </div>
   );
