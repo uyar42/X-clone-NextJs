@@ -14,8 +14,7 @@ interface Posts {
   image?: string;
 }
 
-export const Post = ({ post, id }: { post: Posts[] }) => {
-  console.log("deneme");
+export const Post = ({ post }: { post: Posts[] }) => {
   return (
     <div className="flex border-b  border-gray-200 p-4 hover:bg-gray-50">
       <div className="flex-shrink-0 mr-4">
@@ -30,15 +29,15 @@ export const Post = ({ post, id }: { post: Posts[] }) => {
       <div className="flex-1 ">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-1 whitespace-nowrap">
-            <h4 className="font-bold text-xs truncate">{post?.name}</h4>
+            <h4 className="font-bold text-sm truncate">{post?.name}</h4>
             <span className="text-xs truncate">@{post?.username}</span>
           </div>
           <HiDotsHorizontal className="text-sm" />
         </div>
-        <Link href={`posts/${id}`}>
+        <Link href={`posts/${post?.id}`}>
           <p className="text-gray-800 text-sm my-3">{post?.text}</p>
         </Link>
-        <Link href={`posts/${id}`}>
+        <Link href={`posts/${post?.id}`}>
           <Image
             src={post?.image}
             width={1200}
@@ -47,7 +46,7 @@ export const Post = ({ post, id }: { post: Posts[] }) => {
             className="rounded-2xl "
           ></Image>
         </Link>
-        <Icons />
+        <Icons id={post.id} />
       </div>
     </div>
   );
