@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { CommentModal } from "./components/CommentModal";
 import News from "./components/News";
 import SessionWrapper from "./components/SessionWrapper";
 import Sidebar from "./components/Sidebar";
@@ -37,6 +38,7 @@ export default function RootLayout({
               <News></News>
             </div>
           </div>
+          <CommentModal />
         </body>
       </html>
     </SessionWrapper>
