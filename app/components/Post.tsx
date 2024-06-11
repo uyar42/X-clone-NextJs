@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { Icons } from "./Icons";
 
-interface Posts {
+type Posts = {
   id: string;
   uid: string;
   name?: string;
@@ -11,8 +11,8 @@ interface Posts {
   text: string;
   profileImg?: string;
   timestamp: any; // You might want to use a more specific type like Firestore.Timestamp
-  image?: string;
-}
+  image?: string | null;
+};
 
 export const Post = ({ post }: { post: Posts[] }) => {
   return (
@@ -38,15 +38,19 @@ export const Post = ({ post }: { post: Posts[] }) => {
           <p className="text-gray-800 text-sm my-3">{post?.text}</p>
         </Link>
         <Link href={`posts/${post?.id}`}>
-          <Image
-            src={post?.image}
-            width={1200}
-            height={400}
-            alt="post-image"
-            className="rounded-2xl "
-          ></Image>
+          {post?.image ? (
+            <Image
+              src={post?.image}
+              width={1200}
+              height={400}
+              alt="post-image"
+              className="rounded-2xl "
+            ></Image>
+          ) : (
+            <></>
+          )}
         </Link>
-        <Icons id={post.id} />
+        <Icons id={post.id} uid={post?.uid} />
       </div>
     </div>
   );

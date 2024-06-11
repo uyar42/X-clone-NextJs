@@ -19,7 +19,7 @@ import {
 import { app } from "../firebase";
 import { useEffect, useState } from "react";
 
-export const Icons = ({ id }: { id: any }) => {
+export const Icons = ({ id, uid }: { id: string; uid: string }) => {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState<null | Boolean>(false);
   const [likes, setLikes] = useState<any>([]);
@@ -27,7 +27,7 @@ export const Icons = ({ id }: { id: any }) => {
   const likePost = async () => {
     if (session) {
       if (isLiked) {
-        await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
+        await deleteDoc(doc(db, "posts", id, "likes", session?.user?.uid));
       } else {
         await setDoc(doc(db, "posts", id, "likes", session?.user?.uid), {
           username: session?.user?.username,
@@ -41,21 +41,39 @@ export const Icons = ({ id }: { id: any }) => {
 
   useEffect(() => {
     onSnapshot(collection(db, "posts", id, "likes"), (snapshot) => {
+      console.log(snapshot.docs);
       setLikes(snapshot.docs);
     });
   }, [db]);
 
   useEffect(() => {
     setIsLiked(
-      likes.findIndex((like: { id: any }) => like.id == session?.user?.uid) !==
-        -1
+      likes.findIndex(
+        (like: { id: string }) => like.id === session?.user?.uid
+      ) !== -1
     );
   }, [likes]);
+
+  const deletePost = async () => {
+    if (window.confirm("Are you sure you want to delete this post?"))
+      if (session?.user?.uid === uid)
+        deleteDoc(doc(db, "posts", id))
+          .then(() => {
+            console.log("Document successfully deleted!");
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error("Error removing documnet: ", error);
+          });
+      else {
+        alert("You are not authorized to delete this post");
+      }
+  };
 
   return (
     <div className="flex justify-start gap-5 p-2 text-gray-500">
       <HiOutlineChat className="h-8 w-8 cursor-pointer rounded-full transition duration-300 ease-in-out p-2 hover:text-sky-500 hover:bg-sky-100"></HiOutlineChat>
-      <div className="flex items-center">
+      <div className="flex items-center w-[40px]">
         {isLiked ? (
           <HiHeart
             onClick={likePost}
@@ -76,7 +94,13 @@ export const Icons = ({ id }: { id: any }) => {
           </span>
         )}
       </div>
-      <HiOutlineTrash className="h-8 w-8 cursor-pointer rounded-full transition duration-300 ease-in-out p-2 hover:text-sky-500 hover:bg-sky-100"></HiOutlineTrash>
+
+      {session?.user?.uid === uid && (
+        <HiOutlineTrash
+          onClick={deletePost}
+          className="h-8 w-8 cursor-pointer rounded-full transition duration-300 ease-in-out p-2 hover:text-sky-500 hover:bg-sky-100"
+        ></HiOutlineTrash>
+      )}
     </div>
   );
 };

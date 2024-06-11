@@ -6,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 
 interface Post extends Session {
     id: string;
-    uid: string;
+    uid?: string;
     name?: string;
     username?: string;
     text: string;

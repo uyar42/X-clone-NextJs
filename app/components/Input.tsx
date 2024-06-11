@@ -86,7 +86,7 @@ export default function Input() {
         text,
         profileImg: session.user.image,
         timestamp: serverTimestamp(),
-        image: imageFileUrl,
+        image: imageFileUrl || null,
       });
 
       console.log("Document written with ID: ", docRef.id);

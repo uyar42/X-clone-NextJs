@@ -26,7 +26,7 @@ interface Posts {
 const Feed: React.FC = () => {
   const [data, setData] = useState<Posts[]>([]);
   const db = getFirestore(app);
-
+  console.log(data);
   useEffect(() => {
     const fetchPosts = async () => {
       const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
@@ -35,9 +35,9 @@ const Feed: React.FC = () => {
       querySnapshot.forEach((doc) => {
         posts.push({ id: doc.id, ...doc.data() } as Posts);
       });
+
       setData(posts);
     };
-
     fetchPosts();
   }, [db]);
 
