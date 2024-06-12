@@ -87,8 +87,8 @@ export const Icons = ({ id, uid }: { id: string; uid: string }) => {
   };
 
   return (
-    <div className="flex justify-start items-center gap-5 p-2 text-gray-500">
-      <div className="flex items-center">
+    <div className="flex justify-start items-center  gap-5 p-2 text-gray-500  ">
+      <div className="flex items-center ">
         <HiOutlineChat
           className="h-8 w-8 cursor-pointer rounded-full transition duration-300 ease-in-out p-2 hover:text-sky-500 hover:bg-sky-100"
           onClick={() => {
