@@ -4,6 +4,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import Link from "next/link";
 import { Post } from "@/app/components/Post";
+import Comments from "@/app/components/Comments";
 
 export default async function page({ params }: Params) {
   const db = getFirestore(app);
@@ -20,6 +21,7 @@ export default async function page({ params }: Params) {
         <h2 className="sm:text-lg">Back</h2>
       </div>
       <Post post={data} id={data.id}></Post>
+      <Comments id={params.id}></Comments>
     </div>
   );
 }
