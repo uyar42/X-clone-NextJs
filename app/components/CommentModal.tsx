@@ -9,10 +9,18 @@ import { useSession } from "next-auth/react";
 import ReactModal from "react-modal";
 import { useEffect, useState } from "react";
 import { app } from "../firebase";
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
 import { unsubscribe } from "diagnostics_channel";
 import Image from "next/image";
 import { async } from "@firebase/util";
+import { useRouter } from "next/navigation";
 export const CommentModal = () => {
   const [open, setOpen] = useRecoilState(modalState);
   const [postId, setPostId] = useRecoilState(postIdState);
@@ -20,6 +28,7 @@ export const CommentModal = () => {
   const [post, setPost] = useState({});
   const { data: session } = useSession();
   const db = getFirestore(app);
+  const router = useRouter();
   useEffect(() => {
     if (postId !== "") {
       const postRef = doc(db, "posts", postId);
@@ -34,7 +43,21 @@ export const CommentModal = () => {
     }
   }, [postId]);
 
-  const sendComment = async () => {};
+  const sendComment = async () => {
+    addDoc(collection(db, "posts", postId, "comments"), {
+      name: session.user.name,
+      username: session.user.username,
+      userImg: session.user.image,
+      comment: input,
+      timestamp: serverTimestamp(),
+    })
+      .then(() => {
+        setInput("");
+        setOpen(false);
+        router.push(`/posts/${postId}`);
+      })
+      .catch((error) => console.error("Error adding doc", error));
+  };
   return (
     <div>
       {open && (
