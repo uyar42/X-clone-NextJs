@@ -10,7 +10,7 @@ type Posts = {
   username?: string;
   text: string;
   profileImg?: string;
-  timestamp: any; // You might want to use a more specific type like Firestore.Timestamp
+  timestamp: any;
   image?: string | null;
 };
 
@@ -20,7 +20,7 @@ export const Post = ({ post }: { post: Posts[] }) => {
       <div className="flex-shrink-0 mr-4">
         <Image
           className="rounded-full"
-          src={post?.profileImg || "/default-profile.png"} // Provide a fallback image if profileImg is missing
+          src={post?.profileImg || null}
           width={50}
           height={50}
           alt="Profile Image"
